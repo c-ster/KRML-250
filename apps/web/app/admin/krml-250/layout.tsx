@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/admin/krml-250/defenses", label: "Defenses" },
   { href: "/admin/krml-250/predictions", label: "Predictions" },
   { href: "/admin/krml-250/rankings", label: "Rankings" },
+  { href: "/admin/krml-250/dj-notes", label: "DJ Notes" },
   { href: "/admin/krml-250/sponsors", label: "Sponsors" },
   { href: "/admin/krml-250/settings", label: "Settings" },
 ];
