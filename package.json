@@ -1,0 +1,19 @@
+{
+  "name": "krml-250",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=apps/web\" --names web --prefix-colors cyan",
+    "build": "npm run build --workspace=packages/types && npm run build --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web && npm run lint --workspace=packages/types",
+    "test": "npm run test --workspace=apps/web && npm run test --workspace=packages/types",
+    "type-check": "npm run type-check --workspace=apps/web && npm run type-check --workspace=packages/types"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
