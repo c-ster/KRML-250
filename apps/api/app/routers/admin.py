@@ -94,21 +94,32 @@ def metrics(db: Session = Depends(get_db)):
 
 @router.get("/participants", response_model=list[ParticipantOut])
 def list_participants(
-    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+    skip: int = 0, limit: int = 50, q: Optional[str] = None, db: Session = Depends(get_db)
 ):
-    participants = db.execute(
-        select(orm.Participant).order_by(orm.Participant.created_at.desc()).offset(skip).limit(limit)
-    ).scalars().all()
+    stmt = select(orm.Participant).order_by(orm.Participant.created_at.desc())
+    if q:
+        like = f"%{q.lower()}%"
+        stmt = stmt.where(
+            func.lower(orm.Participant.name).like(like)
+            | func.lower(orm.Participant.email).like(like)
+            | func.lower(orm.Participant.town).like(like)
+        )
+    participants = db.execute(stmt.offset(skip).limit(limit)).scalars().all()
     return [ParticipantOut.model_validate(p) for p in participants]
 
 
 # ─── Songs ────────────────────────────────────────────────────────────────────
 
 @router.get("/songs", response_model=list[SongOut])
-def list_songs(skip: int = 0, limit: int = 200, db: Session = Depends(get_db)):
-    songs = db.execute(
-        select(orm.Song).order_by(orm.Song.canonical_title).offset(skip).limit(limit)
-    ).scalars().all()
+def list_songs(skip: int = 0, limit: int = 50, q: Optional[str] = None, db: Session = Depends(get_db)):
+    stmt = select(orm.Song).order_by(orm.Song.canonical_title)
+    if q:
+        like = f"%{q.lower()}%"
+        stmt = stmt.where(
+            func.lower(orm.Song.canonical_title).like(like)
+            | func.lower(orm.Song.canonical_artist).like(like)
+        )
+    songs = db.execute(stmt.offset(skip).limit(limit)).scalars().all()
     return [SongOut.model_validate(s) for s in songs]
 
 
@@ -183,10 +194,16 @@ def merge_songs(body: MergeSongs, db: Session = Depends(get_db)):
 # ─── Submissions ──────────────────────────────────────────────────────────────
 
 @router.get("/submissions", response_model=list[SubmissionOut])
-def list_submissions(skip: int = 0, limit: int = 200, db: Session = Depends(get_db)):
-    subs = db.execute(
-        select(orm.Submission).order_by(orm.Submission.created_at.desc()).offset(skip).limit(limit)
-    ).scalars().all()
+def list_submissions(skip: int = 0, limit: int = 50, q: Optional[str] = None, db: Session = Depends(get_db)):
+    stmt = select(orm.Submission).join(orm.Song, orm.Submission.song_id == orm.Song.id, isouter=True).order_by(orm.Submission.created_at.desc())
+    if q:
+        like = f"%{q.lower()}%"
+        stmt = stmt.where(
+            func.lower(orm.Song.canonical_title).like(like)
+            | func.lower(orm.Song.canonical_artist).like(like)
+            | func.lower(orm.Submission.why_text).like(like)
+        )
+    subs = db.execute(stmt.offset(skip).limit(limit)).scalars().all()
     return [SubmissionOut.model_validate(s) for s in subs]
 
 

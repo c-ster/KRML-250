@@ -180,11 +180,17 @@ export const leaderboardApi = {
 export const adminApi = {
   metrics: () => request<AdminMetrics>("/admin/metrics", { admin: true }),
 
-  participants: (skip = 0, limit = 100) =>
-    request<Participant[]>(`/admin/participants?skip=${skip}&limit=${limit}`, { admin: true }),
+  participants: (skip = 0, limit = 50, q?: string) => {
+    const params = new URLSearchParams({ skip: String(skip), limit: String(limit) });
+    if (q) params.set("q", q);
+    return request<Participant[]>(`/admin/participants?${params}`, { admin: true });
+  },
 
-  songs: (skip = 0, limit = 200) =>
-    request<Song[]>(`/admin/songs?skip=${skip}&limit=${limit}`, { admin: true }),
+  songs: (skip = 0, limit = 50, q?: string) => {
+    const params = new URLSearchParams({ skip: String(skip), limit: String(limit) });
+    if (q) params.set("q", q);
+    return request<Song[]>(`/admin/songs?${params}`, { admin: true });
+  },
   updateSong: (id: string, body: Partial<Song>) =>
     request<Song>(`/admin/songs/${id}`, {
       method: "PUT",
@@ -198,11 +204,17 @@ export const adminApi = {
       admin: true,
     }),
 
-  submissions: (skip = 0, limit = 200) =>
-    request<Submission[]>(`/admin/submissions?skip=${skip}&limit=${limit}`, { admin: true }),
+  submissions: (skip = 0, limit = 50, q?: string) => {
+    const params = new URLSearchParams({ skip: String(skip), limit: String(limit) });
+    if (q) params.set("q", q);
+    return request<Submission[]>(`/admin/submissions?${params}`, { admin: true });
+  },
 
-  defenses: (status?: string) =>
-    request<Defense[]>(`/admin/defenses${status ? `?status=${status}` : ""}`, { admin: true }),
+  defenses: (status?: string, skip = 0, limit = 50) => {
+    const params = new URLSearchParams({ skip: String(skip), limit: String(limit) });
+    if (status) params.set("status", status);
+    return request<Defense[]>(`/admin/defenses?${params}`, { admin: true });
+  },
   updateDefense: (id: string, approval_status: string, approved_excerpt?: string) =>
     request<Defense>(`/admin/defenses/${id}`, {
       method: "PUT",
@@ -211,7 +223,8 @@ export const adminApi = {
     }),
 
   swipeVotes: () => request<SwipeVoteSummary[]>("/admin/swipe-votes", { admin: true }),
-  predictions: () => request<Prediction[]>("/admin/predictions", { admin: true }),
+  predictions: (skip = 0, limit = 25) =>
+    request<Prediction[]>(`/admin/predictions?skip=${skip}&limit=${limit}`, { admin: true }),
 
   djNotes: () => request<DJNote[]>("/admin/dj-notes", { admin: true }),
   createDJNote: (body: { dj_name: string; song_id: string; note: string; display_publicly: boolean }) =>

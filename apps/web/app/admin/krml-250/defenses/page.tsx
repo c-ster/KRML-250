@@ -2,21 +2,29 @@
 
 import { useEffect, useState } from "react";
 import { adminApi, type Defense } from "@/lib/api";
+import { Pagination } from "@/components/krml250/Pagination";
 
 const STATUS_FILTER_OPTIONS = ["all", "pending", "approved", "rejected"];
+const PAGE_SIZE = 50;
 
 export default function AdminDefenses() {
   const [defenses, setDefenses] = useState<Defense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [statusFilter, setStatusFilter] = useState("pending");
+  const [page, setPage] = useState(0);
   const [excerpt, setExcerpt] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    adminApi.defenses(statusFilter === "all" ? undefined : statusFilter).then(setDefenses).catch((e) => setError(e.detail || "Failed to load")).finally(() => setLoading(false));
-  }, [statusFilter]);
+    adminApi.defenses(statusFilter === "all" ? undefined : statusFilter, page * PAGE_SIZE, PAGE_SIZE)
+      .then(setDefenses)
+      .catch((e) => setError(e.detail || "Failed to load"))
+      .finally(() => setLoading(false));
+  }, [statusFilter, page]);
+
+  function handleFilterChange(s: string) { setStatusFilter(s); setPage(0); }
 
   async function handleAction(id: string, status: string) {
     setSaving(id);
@@ -32,14 +40,14 @@ export default function AdminDefenses() {
         <h1 className="text-2xl font-bold text-zinc-100">Defense Queue</h1>
         <div className="flex gap-2">
           {STATUS_FILTER_OPTIONS.map((s) => (
-            <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${statusFilter === s ? "bg-amber-500 text-zinc-900 font-semibold" : "bg-zinc-800 text-zinc-400 hover:text-zinc-100"}`}>
+            <button key={s} onClick={() => handleFilterChange(s)} className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${statusFilter === s ? "bg-amber-500 text-zinc-900 font-semibold" : "bg-zinc-800 text-zinc-400 hover:text-zinc-100"}`}>
               {s.charAt(0).toUpperCase() + s.slice(1)}
             </button>
           ))}
         </div>
       </div>
       {error && <div className="bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
-      {loading ? <p className="text-zinc-400 animate-pulse">Loading...</p> : defenses.length === 0 ? <p className="text-zinc-500">No defenses with status: {statusFilter}</p> : (
+      {loading ? <p className="text-zinc-400 animate-pulse">Loading...</p> : defenses.length === 0 && page === 0 ? <p className="text-zinc-500">No defenses with status: {statusFilter}</p> : (
         <div className="space-y-4">
           {defenses.map((defense) => (
             <div key={defense.id} className={`bg-zinc-800 border rounded-xl p-5 ${defense.approval_status === "pending" ? "border-amber-500/30" : defense.approval_status === "approved" ? "border-green-700/30" : "border-red-700/30"}`}>
@@ -68,6 +76,13 @@ export default function AdminDefenses() {
               )}
             </div>
           ))}
+          <Pagination
+            page={page}
+            pageSize={PAGE_SIZE}
+            count={defenses.length}
+            onPrev={() => setPage((p) => p - 1)}
+            onNext={() => setPage((p) => p + 1)}
+          />
         </div>
       )}
     </div>

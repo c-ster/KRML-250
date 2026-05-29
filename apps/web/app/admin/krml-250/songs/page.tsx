@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { adminApi, type Song } from "@/lib/api";
+import { Pagination } from "@/components/krml250/Pagination";
 
 const STATUS_OPTIONS = ["pending", "approved", "excluded", "needs_review"];
+const PAGE_SIZE = 50;
 
 export default function AdminSongs() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<Song>>({});
   const [mergeMode, setMergeMode] = useState(false);
@@ -19,10 +23,20 @@ export default function AdminSongs() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    adminApi.songs(0, 500).then(setSongs).catch((e) => setError(e.detail || "Failed to load")).finally(() => setLoading(false));
-  }, []);
+    setLoading(true);
+    if (debounce.current) clearTimeout(debounce.current);
+    debounce.current = setTimeout(() => {
+      adminApi.songs(page * PAGE_SIZE, PAGE_SIZE, search || undefined)
+        .then(setSongs)
+        .catch((e) => setError(e.detail || "Failed to load"))
+        .finally(() => setLoading(false));
+    }, 300);
+    return () => { if (debounce.current) clearTimeout(debounce.current); };
+  }, [page, search]);
 
-  const filtered = songs.filter((s) => !search || s.canonical_title.toLowerCase().includes(search.toLowerCase()) || s.canonical_artist.toLowerCase().includes(search.toLowerCase()));
+  function handleSearch(q: string) { setSearch(q); setPage(0); }
+
+  const filtered = songs;
 
   async function saveEdit(id: string) {
     setSaving(true);
@@ -77,7 +91,7 @@ export default function AdminSongs() {
         </div>
       )}
       <div className="mb-4">
-        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search songs..." className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 text-sm w-80" />
+        <input type="text" value={search} onChange={(e) => handleSearch(e.target.value)} placeholder="Search songs..." className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 text-sm w-80" />
       </div>
       {error && <div className="bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
       {loading ? <p className="text-zinc-400 animate-pulse">Loading...</p> : (
@@ -140,7 +154,13 @@ export default function AdminSongs() {
               </div>
             )
           )}
-          <p className="text-zinc-600 text-sm mt-3">{filtered.length} of {songs.length} songs</p>
+          <Pagination
+            page={page}
+            pageSize={PAGE_SIZE}
+            count={filtered.length}
+            onPrev={() => setPage((p) => p - 1)}
+            onNext={() => setPage((p) => p + 1)}
+          />
         </div>
       )}
     </div>
