@@ -240,6 +240,11 @@ export const adminApi = {
       body: JSON.stringify(body),
       admin: true,
     }),
+  deleteSponsor: (id: string) =>
+    request<void>(`/admin/sponsor-placements/${id}`, {
+      method: "DELETE",
+      admin: true,
+    }),
 
   settings: () => request<CampaignSetting[]>("/admin/campaign-settings", { admin: true }),
   updateSetting: (key: string, value: string) =>

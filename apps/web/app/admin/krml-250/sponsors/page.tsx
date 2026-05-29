@@ -13,6 +13,7 @@ export default function AdminSponsors() {
   const [form, setForm] = useState<Partial<Sponsor>>(BLANK_SPONSOR);
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     adminApi.sponsors().then(setSponsors).catch((e) => setError(e.detail || "Failed to load")).finally(() => setLoading(false));
@@ -34,6 +35,14 @@ export default function AdminSponsors() {
   }
 
   function startEdit(sponsor: Sponsor) { setForm(sponsor); setEditId(sponsor.id); setShowForm(true); }
+
+  async function handleDelete(id: string) {
+    try {
+      await adminApi.deleteSponsor(id);
+      setSponsors((prev) => prev.filter((s) => s.id !== id));
+      setDeleteConfirmId(null);
+    } catch (e: any) { setError(e.detail || "Delete failed"); }
+  }
 
   return (
     <div className="p-6">
@@ -70,6 +79,14 @@ export default function AdminSponsors() {
               <div className="flex-1"><div className="text-zinc-100 font-medium">{s.sponsor_name}</div><div className="text-zinc-500 text-xs">{s.placement_type} · {s.link_url ?? "no link"}</div></div>
               <span className={`text-xs px-2 py-0.5 rounded-full ${s.active ? "bg-green-900/50 text-green-400" : "bg-zinc-700 text-zinc-500"}`}>{s.active ? "Active" : "Inactive"}</span>
               <button onClick={() => startEdit(s)} className="text-zinc-500 hover:text-zinc-200 text-xs px-2 py-1 rounded">Edit</button>
+              {deleteConfirmId === s.id ? (
+                <span className="flex items-center gap-1">
+                  <button onClick={() => handleDelete(s.id)} className="text-red-400 hover:text-red-300 text-xs px-2 py-1 rounded bg-red-900/30">Confirm delete</button>
+                  <button onClick={() => setDeleteConfirmId(null)} className="text-zinc-500 hover:text-zinc-300 text-xs px-1">✕</button>
+                </span>
+              ) : (
+                <button onClick={() => setDeleteConfirmId(s.id)} className="text-zinc-600 hover:text-red-400 text-xs px-2 py-1 rounded transition-colors">Delete</button>
+              )}
             </div>
           ))}
           {sponsors.length === 0 && <p className="text-zinc-500">No sponsors yet.</p>}

@@ -26,7 +26,14 @@ export default function AdminSettings() {
   async function saveSetting(key: string) {
     const value = edits[key];
     if (value === undefined) return;
+    if (key === "ranking_weights") {
+      try { JSON.parse(value); } catch {
+        setError("Invalid JSON — fix the syntax before saving ranking weights.");
+        return;
+      }
+    }
     setSaving(key);
+    setError("");
     try {
       const updated = await adminApi.updateSetting(key, value);
       setSettings((prev) => prev.map((s) => (s.key === key ? updated : s)));

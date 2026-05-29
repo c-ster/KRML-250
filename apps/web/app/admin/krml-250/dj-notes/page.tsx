@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { adminApi, type DJNote } from "@/lib/api";
+import { adminApi, type DJNote, type SongSearchResult } from "@/lib/api";
+import { SongAutocomplete } from "@/components/krml250/SongAutocomplete";
 
 const EMPTY_FORM = { dj_name: "", song_id: "", note: "", display_publicly: false };
 
@@ -14,7 +15,8 @@ export default function AdminDJNotes() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
-  const [songSearch, setSongSearch] = useState("");
+  const [selectedSong, setSelectedSong] = useState<SongSearchResult | null>(null);
+  const [listFilter, setListFilter] = useState("");
 
   useEffect(() => {
     load();
@@ -34,19 +36,18 @@ export default function AdminDJNotes() {
   function openCreate() {
     setEditingId(null);
     setForm(EMPTY_FORM);
-    setSongSearch("");
+    setSelectedSong(null);
     setShowForm(true);
   }
 
   function openEdit(note: DJNote) {
     setEditingId(note.id);
-    setForm({
-      dj_name: note.dj_name,
-      song_id: note.song_id,
-      note: note.note,
-      display_publicly: note.display_publicly,
-    });
-    setSongSearch(note.song ? `${note.song.canonical_title} — ${note.song.canonical_artist}` : note.song_id);
+    setForm({ dj_name: note.dj_name, song_id: note.song_id, note: note.note, display_publicly: note.display_publicly });
+    setSelectedSong(
+      note.song
+        ? { id: note.song_id, canonical_title: note.song.canonical_title, canonical_artist: note.song.canonical_artist, decade: note.song.decade, release_year: note.song.release_year }
+        : null
+    );
     setShowForm(true);
   }
 
@@ -54,12 +55,17 @@ export default function AdminDJNotes() {
     setShowForm(false);
     setEditingId(null);
     setForm(EMPTY_FORM);
-    setSongSearch("");
+    setSelectedSong(null);
+  }
+
+  function handleSongSelect(song: SongSearchResult | null) {
+    setSelectedSong(song);
+    setForm((f) => ({ ...f, song_id: song?.id ?? "" }));
   }
 
   async function handleSave() {
-    if (!form.dj_name.trim() || !form.song_id.trim() || !form.note.trim()) {
-      setError("DJ name, song ID, and note are all required.");
+    if (!form.dj_name.trim() || !form.song_id || !form.note.trim()) {
+      setError("DJ name, song, and note are all required.");
       return;
     }
     setSaving(true);
@@ -89,14 +95,12 @@ export default function AdminDJNotes() {
     }
   }
 
-  const filtered = songSearch && !editingId
-    ? notes
-    : notes.filter((n) =>
-        !songSearch ||
-        n.song?.canonical_title.toLowerCase().includes(songSearch.toLowerCase()) ||
-        n.song?.canonical_artist.toLowerCase().includes(songSearch.toLowerCase()) ||
-        n.dj_name.toLowerCase().includes(songSearch.toLowerCase())
-      );
+  const filtered = notes.filter((n) =>
+    !listFilter ||
+    n.song?.canonical_title.toLowerCase().includes(listFilter.toLowerCase()) ||
+    n.song?.canonical_artist.toLowerCase().includes(listFilter.toLowerCase()) ||
+    n.dj_name.toLowerCase().includes(listFilter.toLowerCase())
+  );
 
   return (
     <div className="p-6">
@@ -132,14 +136,12 @@ export default function AdminDJNotes() {
               />
             </div>
             <div>
-              <label className="text-xs text-zinc-500 mb-1 block">Song ID</label>
-              <input
-                value={form.song_id}
-                onChange={(e) => setForm((f) => ({ ...f, song_id: e.target.value }))}
-                placeholder="Paste song UUID"
-                className="w-full bg-zinc-700 border border-zinc-600 rounded px-3 py-2 text-zinc-100 text-sm focus:outline-none focus:border-amber-500 font-mono"
+              <label className="text-xs text-zinc-500 mb-1 block">Song</label>
+              <SongAutocomplete
+                value={selectedSong}
+                onChange={handleSongSelect}
+                placeholder="Search by title or artist…"
               />
-              <p className="text-xs text-zinc-600 mt-1">Copy the ID from the Songs page.</p>
             </div>
           </div>
           <div className="mb-4">
@@ -184,8 +186,8 @@ export default function AdminDJNotes() {
 
       <div className="mb-4">
         <input
-          value={songSearch}
-          onChange={(e) => setSongSearch(e.target.value)}
+          value={listFilter}
+          onChange={(e) => setListFilter(e.target.value)}
           placeholder="Filter by song, artist, or DJ name…"
           className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 text-sm focus:outline-none focus:border-amber-500"
         />
@@ -204,16 +206,14 @@ export default function AdminDJNotes() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="text-amber-400 font-semibold text-sm">{note.dj_name}</span>
                     <span className="text-zinc-600 text-xs">on</span>
-                    <span className="text-zinc-100 text-sm font-medium truncate">
+                    <span className="text-zinc-100 text-sm font-medium">
                       {note.song?.canonical_title ?? note.song_id}
                     </span>
                     {note.song && (
-                      <span className="text-zinc-500 text-sm truncate">
-                        — {note.song.canonical_artist}
-                      </span>
+                      <span className="text-zinc-500 text-sm">— {note.song.canonical_artist}</span>
                     )}
                   </div>
                   <p className="text-zinc-300 text-sm leading-relaxed">{note.note}</p>
@@ -238,7 +238,6 @@ export default function AdminDJNotes() {
                   </button>
                 </div>
               </div>
-              <div className="mt-2 text-zinc-600 text-xs font-mono">{note.song_id}</div>
             </div>
           ))}
         </div>

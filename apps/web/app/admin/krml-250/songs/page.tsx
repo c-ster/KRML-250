@@ -15,6 +15,7 @@ export default function AdminSongs() {
   const [mergeMode, setMergeMode] = useState(false);
   const [keepId, setKeepId] = useState("");
   const [mergeId, setMergeId] = useState("");
+  const [mergeConfirm, setMergeConfirm] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function AdminSongs() {
     try {
       const updated = await adminApi.mergeSongs(keepId, mergeId);
       setSongs((prev) => prev.filter((s) => s.id !== mergeId).map((s) => (s.id === keepId ? updated : s)));
-      setMergeMode(false); setKeepId(""); setMergeId("");
+      setMergeMode(false); setKeepId(""); setMergeId(""); setMergeConfirm(false);
     } catch (e: any) { setError(e.detail || "Merge failed"); } finally { setSaving(false); }
   }
 
@@ -64,7 +65,15 @@ export default function AdminSongs() {
               <input value={mergeId} onChange={(e) => setMergeId(e.target.value)} className="w-full bg-zinc-700 border border-zinc-600 rounded px-3 py-2 text-zinc-100 text-sm focus:outline-none focus:border-amber-500" placeholder="ID to merge..." />
             </div>
           </div>
-          <button onClick={doMerge} disabled={saving || !keepId || !mergeId} className="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-zinc-900 font-bold px-4 py-2 rounded-lg text-sm">{saving ? "Merging..." : "Confirm Merge"}</button>
+          {!mergeConfirm ? (
+            <button onClick={() => setMergeConfirm(true)} disabled={!keepId || !mergeId} className="bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-zinc-900 font-bold px-4 py-2 rounded-lg text-sm">Merge Songs →</button>
+          ) : (
+            <div className="flex items-center gap-3 bg-red-900/30 border border-red-700 rounded-lg px-4 py-3">
+              <span className="text-red-300 text-sm">This will permanently delete the merged song. Are you sure?</span>
+              <button onClick={doMerge} disabled={saving} className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold px-3 py-1.5 rounded text-sm">{saving ? "Merging…" : "Yes, merge"}</button>
+              <button onClick={() => setMergeConfirm(false)} className="text-zinc-400 hover:text-zinc-200 text-sm">Cancel</button>
+            </div>
+          )}
         </div>
       )}
       <div className="mb-4">

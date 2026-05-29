@@ -325,6 +325,15 @@ def update_sponsor(
     return SponsorOut.model_validate(sponsor)
 
 
+@router.delete("/sponsor-placements/{sponsor_id}", status_code=204)
+def delete_sponsor(sponsor_id: str, db: Session = Depends(get_db)):
+    sponsor = db.get(orm.SponsorPlacement, sponsor_id)
+    if not sponsor:
+        raise HTTPException(status_code=404, detail="Sponsor not found")
+    db.delete(sponsor)
+    db.commit()
+
+
 # ─── Campaign Settings ────────────────────────────────────────────────────────
 
 @router.get("/campaign-settings", response_model=list[CampaignSettingOut])
