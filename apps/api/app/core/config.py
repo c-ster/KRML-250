@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     secret_key: str = "changeme-secret-key"
     admin_token: str = "changeme-admin-token"
     cors_origins: list[str] = ["http://localhost:3000"]
+    cors_origins_str: str = ""  # comma-separated, overrides cors_origins if set
+
+    @property
+    def allowed_origins(self) -> list[str]:
+        if self.cors_origins_str:
+            return [o.strip() for o in self.cors_origins_str.split(",") if o.strip()]
+        return self.cors_origins
 
     database_url: str = "postgresql://user:password@localhost:5432/krml250"
 

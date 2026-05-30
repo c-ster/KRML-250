@@ -5,4 +5,4 @@ nixPkgs = ["python311"]
 cmds = ["pip install -e apps/api"]
 
 [start]
-cmd = "cd apps/api && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+cmd = "cd apps/api && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
