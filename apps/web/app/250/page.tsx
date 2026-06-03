@@ -42,17 +42,27 @@ export default async function LandingPage() {
         </div>
       </nav>
 
-      <section className="px-4 py-20 text-center max-w-3xl mx-auto">
-        <div className="text-[#C9A66B] text-xs font-semibold uppercase tracking-widest mb-3">KRML Radio presents</div>
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1F1F1F] leading-tight mb-4">
-          What does the<br /><span className="text-[#2F5D62]">Monterey Bay</span><br />sound like?
-        </h1>
-        <p className="text-[#6B6560] text-lg mb-2">KRML 250 is a listener-driven campaign to find the 250 songs that define our stretch of California coast.</p>
-        <p className="text-[#8A8480] text-base mb-10">Submit your three songs, swipe-vote the nominations, write a defense, and predict the Top 5. The results reveal on July 3, 2026.</p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/250/submit" className="bg-[#2F5D62] hover:bg-[#245059] text-white font-bold px-6 py-4 rounded-xl text-lg transition-colors">🎵 Submit Your Three Songs</Link>
-          <Link href="/250/swipe" className="bg-white hover:bg-[#F5F3EF] border border-[#D8D4CE] text-[#1F1F1F] font-semibold px-6 py-4 rounded-xl text-lg transition-colors">👆 Swipe the Bay</Link>
-          <Link href="/250/predict" className="bg-white hover:bg-[#F5F3EF] border border-[#D8D4CE] text-[#1F1F1F] font-semibold px-6 py-4 rounded-xl text-lg transition-colors">🔮 Predict the Top 5</Link>
+      <section className="relative min-h-[560px] flex items-center justify-center text-center overflow-hidden">
+        {/* Hero background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/hero.jpg')" }}
+        />
+        {/* Gradient screen — warm sand overlay to keep text readable */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1F1F1F]/40 via-[#1F1F1F]/30 to-[#F5F3EF]" />
+        {/* Content */}
+        <div className="relative z-10 px-4 py-20 max-w-3xl mx-auto">
+          <div className="text-[#E2C48A] text-xs font-semibold uppercase tracking-widest mb-3 drop-shadow">KRML Radio presents</div>
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
+            What does the<br /><span className="text-[#E2C48A]">Monterey Bay</span><br />sound like?
+          </h1>
+          <p className="text-white/80 text-lg mb-2 drop-shadow">KRML 250 is a listener-driven campaign to find the 250 songs that define our stretch of California coast.</p>
+          <p className="text-white/60 text-base mb-10 drop-shadow">Submit your three songs, swipe-vote the nominations, write a defense, and predict the Top 5. The results reveal on July 3, 2026.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/250/submit" className="bg-[#2F5D62] hover:bg-[#245059] text-white font-bold px-6 py-4 rounded-xl text-lg transition-colors shadow-lg">🎵 Submit Your Three Songs</Link>
+            <Link href="/250/swipe" className="bg-white/90 hover:bg-white border border-white/50 text-[#1F1F1F] font-semibold px-6 py-4 rounded-xl text-lg transition-colors shadow-lg">👆 Swipe the Bay</Link>
+            <Link href="/250/predict" className="bg-white/90 hover:bg-white border border-white/50 text-[#1F1F1F] font-semibold px-6 py-4 rounded-xl text-lg transition-colors shadow-lg">🔮 Predict the Top 5</Link>
+          </div>
         </div>
       </section>
 
