@@ -34,9 +34,10 @@ class Settings(BaseSettings):
     @property
     def sync_database_url(self) -> str:
         url = self.database_url
-        # Ensure we use psycopg2 sync driver
         if url.startswith("postgresql+asyncpg://"):
             url = url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        elif url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
         return url
 
 
