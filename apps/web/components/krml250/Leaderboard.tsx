@@ -14,29 +14,34 @@ export function Leaderboard({ songs, showScores = false, title = "Top Songs", li
 
   return (
     <div>
-      {title && <h2 className="text-xl font-bold text-zinc-100 mb-4">{title}</h2>}
+      {title && <h2 className="font-serif text-xl font-bold text-[#1F1F1F] mb-4">{title}</h2>}
       <div className="space-y-2">
         {displayed.map((entry, index) => (
-          <div key={entry.song.id} className="flex items-center gap-4 bg-zinc-800/60 border border-zinc-700 rounded-xl px-4 py-3 hover:border-zinc-600 transition-colors">
+          <div key={entry.song.id} className="flex items-center gap-4 bg-white border border-[#D8D4CE] rounded-xl px-4 py-3 hover:border-[#C9A66B] transition-colors">
             <div className="w-8 text-center flex-shrink-0">
-              {entry.rank !== null ? <span className="text-amber-400 font-bold text-lg">#{entry.rank}</span> : <span className="text-zinc-600 text-sm font-bold">{index + 1}</span>}
+              {entry.rank !== null
+                ? <span className="text-[#C9A66B] font-bold text-lg">#{entry.rank}</span>
+                : <span className="text-[#8A8480] text-sm font-bold">{index + 1}</span>}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-zinc-100 font-medium truncate">{entry.song.canonical_title}</div>
-              <div className="text-zinc-400 text-sm truncate">{entry.song.canonical_artist}{entry.song.decade && <span className="ml-2 text-zinc-600">· {entry.song.decade}</span>}</div>
+              <div className="text-[#1F1F1F] font-medium truncate">{entry.song.canonical_title}</div>
+              <div className="text-[#6B6560] text-sm truncate">
+                {entry.song.canonical_artist}
+                {entry.song.decade && <span className="ml-2 text-[#8A8480]">· {entry.song.decade}</span>}
+              </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              {entry.song.dj_pick && <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/30">DJ</span>}
-              {entry.song.krml_seeded && <span className="text-xs bg-zinc-700 text-zinc-400 px-2 py-0.5 rounded-full">KRML</span>}
+              {entry.song.dj_pick && <span className="text-xs bg-[#C9A66B]/20 text-[#B8924A] px-2 py-0.5 rounded-full border border-[#C9A66B]/40">DJ</span>}
+              {entry.song.krml_seeded && <span className="text-xs bg-[#2F5D62]/10 text-[#2F5D62] px-2 py-0.5 rounded-full border border-[#2F5D62]/20">KRML</span>}
             </div>
             <div className="flex-shrink-0 text-right">
-              <div className="text-zinc-300 text-sm">{entry.nomination_count} <span className="text-zinc-500">noms</span></div>
-              {showScores && <div className="text-amber-500 text-xs">{(entry.score * 100).toFixed(1)}pts</div>}
+              <div className="text-[#6B6560] text-sm">{entry.nomination_count} <span className="text-[#8A8480]">noms</span></div>
+              {showScores && <div className="text-[#C9A66B] text-xs">{(entry.score * 100).toFixed(1)}pts</div>}
             </div>
           </div>
         ))}
       </div>
-      {displayed.length === 0 && <div className="text-center py-8 text-zinc-500">No songs yet — be the first to nominate!</div>}
+      {displayed.length === 0 && <div className="text-center py-8 text-[#8A8480]">No songs yet — be the first to nominate!</div>}
     </div>
   );
 }

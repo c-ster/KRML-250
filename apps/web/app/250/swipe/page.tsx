@@ -71,18 +71,22 @@ export default function SwipePage() {
     if (song) router.push(`/250/defend/${song.id}`);
   }
 
-  if (loading || fetching) return <div className="min-h-screen bg-zinc-900 flex items-center justify-center"><p className="text-zinc-400 animate-pulse">Loading songs...</p></div>;
+  if (loading || fetching) return (
+    <div className="min-h-screen bg-[#F5F3EF] flex items-center justify-center">
+      <p className="text-[#6B6560] animate-pulse">Loading songs...</p>
+    </div>
+  );
 
   if (done) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#F5F3EF] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-2xl font-bold text-zinc-100 mb-3">You&apos;ve voted on everything!</h1>
-          <p className="text-zinc-400 mb-6">Amazing! Come back later as more songs are nominated.</p>
+          <h1 className="font-serif text-2xl font-bold text-[#1F1F1F] mb-3">You&apos;ve voted on everything!</h1>
+          <p className="text-[#6B6560] mb-6">Amazing! Come back later as more songs are nominated.</p>
           <div className="flex flex-col gap-3">
-            <Link href="/250/predict" className="bg-amber-500 hover:bg-amber-400 text-zinc-900 font-bold px-6 py-3 rounded-xl transition-colors">Predict the Top 5 →</Link>
-            <Link href="/250" className="text-zinc-400 hover:text-zinc-300 text-sm">Back to Home</Link>
+            <Link href="/250/predict" className="bg-[#2F5D62] hover:bg-[#245059] text-white font-bold px-6 py-3 rounded-xl transition-colors">Predict the Top 5 →</Link>
+            <Link href="/250" className="text-[#6B6560] hover:text-[#1F1F1F] text-sm">Back to Home</Link>
           </div>
         </div>
       </div>
@@ -93,18 +97,23 @@ export default function SwipePage() {
   if (!currentSong) return null;
 
   return (
-    <div className="min-h-screen bg-zinc-900 px-4 py-8">
+    <div className="min-h-screen bg-[#F5F3EF] px-4 py-8">
       <div className="max-w-sm mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <Link href="/250" className="text-zinc-500 hover:text-zinc-300 text-sm">← Home</Link>
-          <span className="text-zinc-500 text-sm">{totalRemaining} left to vote</span>
+          <Link href="/250" className="text-[#6B6560] hover:text-[#1F1F1F] text-sm">← Home</Link>
+          <span className="text-[#6B6560] text-sm">{totalRemaining} left to vote</span>
         </div>
-        <div className="w-full h-1.5 bg-zinc-800 rounded-full mb-6 overflow-hidden">
-          <div className="h-full bg-amber-500 rounded-full transition-all duration-300" style={{ width: `${100 - (totalRemaining / (totalRemaining + currentIndex + 1)) * 100}%` }} />
+        <div className="w-full h-1.5 bg-[#D8D4CE] rounded-full mb-6 overflow-hidden">
+          <div className="h-full bg-[#2F5D62] rounded-full transition-all duration-300"
+            style={{ width: `${100 - (totalRemaining / (totalRemaining + currentIndex + 1)) * 100}%` }} />
         </div>
         <SongCard song={currentSong} onVote={handleVote} onDefend={handleDefend} loading={voting} />
-        {lastVote && <div className="text-center mt-4 text-zinc-500 text-sm animate-pulse">{lastVote === "yes" ? "👍 Voted yes" : lastVote === "no" ? "👎 Voted no" : "🤷 Marked unsure"}</div>}
-        {error && <div className="mt-4 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm text-center">{error}</div>}
+        {lastVote && (
+          <div className="text-center mt-4 text-[#6B6560] text-sm animate-pulse">
+            {lastVote === "yes" ? "👍 Voted yes" : lastVote === "no" ? "👎 Voted no" : "🤷 Marked unsure"}
+          </div>
+        )}
+        {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm text-center">{error}</div>}
       </div>
     </div>
   );

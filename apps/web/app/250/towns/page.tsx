@@ -12,11 +12,11 @@ async function getTowns(): Promise<TownEntry[]> {
 export default async function TownsPage() {
   const towns = await getTowns();
   return (
-    <div className="min-h-screen bg-zinc-900 px-4 py-10">
+    <div className="min-h-screen bg-[#F5F3EF] px-4 py-10">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-6"><Link href="/250" className="text-zinc-500 hover:text-zinc-300 text-sm">← Back to KRML 250</Link></div>
-        <h1 className="text-3xl font-bold text-zinc-100 mb-2">🌊 Songs by Town</h1>
-        <p className="text-zinc-400 mb-8">See which towns are most represented in the KRML 250 nominations.</p>
+        <div className="mb-6"><Link href="/250" className="text-[#6B6560] hover:text-[#1F1F1F] text-sm">← Back to KRML 250</Link></div>
+        <h1 className="font-serif text-3xl font-bold text-[#1F1F1F] mb-2">🌊 Songs by Town</h1>
+        <p className="text-[#6B6560] mb-8">See which towns are most represented in the KRML 250 nominations.</p>
         <TownLeaderboard entries={towns} />
       </div>
     </div>

@@ -30,6 +30,8 @@ interface SlotState {
 
 const emptySlot = (): SlotState => ({ song: null, why_text: "", town_tag: "", decade_tag: "" });
 
+const inputCls = "w-full bg-[#F5F3EF] border border-[#D8D4CE] rounded-lg px-4 py-3 text-[#1F1F1F] placeholder-[#8A8480] focus:outline-none focus:border-[#2F5D62] transition-colors";
+
 export default function SubmitPage() {
   const router = useRouter();
   const { participant, loading } = useParticipantSession();
@@ -70,18 +72,22 @@ export default function SubmitPage() {
     }
   }
 
-  if (loading) return <div className="min-h-screen bg-zinc-900 flex items-center justify-center"><p className="text-zinc-400 animate-pulse">Loading...</p></div>;
+  if (loading) return (
+    <div className="min-h-screen bg-[#F5F3EF] flex items-center justify-center">
+      <p className="text-[#6B6560] animate-pulse">Loading...</p>
+    </div>
+  );
 
   if (done) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#F5F3EF] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">🎵</div>
-          <h1 className="text-2xl font-bold text-zinc-100 mb-3">Submission Received!</h1>
-          <p className="text-zinc-400 mb-2">Your three songs are in. Now go vote and write defenses!</p>
+          <h1 className="font-serif text-2xl font-bold text-[#1F1F1F] mb-3">Submission Received!</h1>
+          <p className="text-[#6B6560] mb-2">Your three songs are in. Now go vote and write defenses!</p>
           <div className="flex flex-col gap-3 mt-6">
-            <Link href="/250/swipe" className="bg-amber-500 hover:bg-amber-400 text-zinc-900 font-bold px-6 py-3 rounded-xl transition-colors">Start Swiping →</Link>
-            <Link href="/250" className="text-zinc-400 hover:text-zinc-300 text-sm">Back to Home</Link>
+            <Link href="/250/swipe" className="bg-[#2F5D62] hover:bg-[#245059] text-white font-bold px-6 py-3 rounded-xl transition-colors">Start Swiping →</Link>
+            <Link href="/250" className="text-[#6B6560] hover:text-[#1F1F1F] text-sm">Back to Home</Link>
           </div>
         </div>
       </div>
@@ -89,35 +95,38 @@ export default function SubmitPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 px-4 py-10">
+    <div className="min-h-screen bg-[#F5F3EF] px-4 py-10">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-6"><Link href="/250" className="text-zinc-500 hover:text-zinc-300 text-sm">← Back to KRML 250</Link></div>
-        <h1 className="text-3xl font-bold text-zinc-100 mb-2">Submit Your Three Songs</h1>
-        <p className="text-zinc-400 mb-8">Welcome, <span className="text-amber-400">{participant?.name}</span>! Pick 3 songs that represent the sound of the Monterey Bay.</p>
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="mb-6"><Link href="/250" className="text-[#6B6560] hover:text-[#1F1F1F] text-sm">← Back to KRML 250</Link></div>
+        <h1 className="font-serif text-3xl font-bold text-[#1F1F1F] mb-2">Submit Your Three Songs</h1>
+        <p className="text-[#6B6560] mb-8">Welcome, <span className="text-[#2F5D62] font-medium">{participant?.name}</span>! Pick 3 songs that represent the sound of the Monterey Bay.</p>
+        <form onSubmit={handleSubmit} className="space-y-6">
           {slots.map((slot, index) => (
-            <div key={index} className="bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-amber-400">Song {index + 1}</h2>
+            <div key={index} className="bg-white border border-[#D8D4CE] rounded-2xl p-6 space-y-4">
+              <h2 className="font-serif text-lg font-semibold text-[#2F5D62]">Song {index + 1}</h2>
               <SongAutocomplete value={slot.song} onChange={(song) => updateSlot(index, { song })} label="Song Title & Artist" placeholder="Search for a song..." />
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1">Why this song? <span className="text-zinc-500">(required)</span></label>
-                <textarea required value={slot.why_text} onChange={(e) => updateSlot(index, { why_text: e.target.value })} rows={3} maxLength={500} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 resize-none" placeholder="Tell us why this song represents the Monterey Bay..." />
-                <div className="text-right text-xs text-zinc-600 mt-1">{slot.why_text.length}/500</div>
+                <label className="block text-sm font-medium text-[#1F1F1F] mb-1">Why this song? <span className="text-[#8A8480]">(required)</span></label>
+                <textarea required value={slot.why_text} onChange={(e) => updateSlot(index, { why_text: e.target.value })} rows={3} maxLength={500}
+                  className={`${inputCls} resize-none`}
+                  placeholder="Tell us why this song represents the Monterey Bay..." />
+                <div className="text-right text-xs text-[#8A8480] mt-1">{slot.why_text.length}/500</div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <select value={slot.town_tag} onChange={(e) => updateSlot(index, { town_tag: e.target.value })} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 text-sm focus:outline-none focus:border-amber-500">
+                <select value={slot.town_tag} onChange={(e) => updateSlot(index, { town_tag: e.target.value })} className={inputCls + " text-sm py-2"}>
                   <option value="">Any town</option>
                   {TOWNS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
-                <select value={slot.decade_tag} onChange={(e) => updateSlot(index, { decade_tag: e.target.value })} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 text-sm focus:outline-none focus:border-amber-500">
+                <select value={slot.decade_tag} onChange={(e) => updateSlot(index, { decade_tag: e.target.value })} className={inputCls + " text-sm py-2"}>
                   <option value="">Any decade</option>
                   {DECADES.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
             </div>
           ))}
-          {error && <div className="bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm">{error}</div>}
-          <button type="submit" disabled={submitting} className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-900 font-bold py-4 rounded-xl text-lg transition-colors">
+          {error && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>}
+          <button type="submit" disabled={submitting}
+            className="w-full bg-[#2F5D62] hover:bg-[#245059] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl text-lg transition-colors">
             {submitting ? "Submitting..." : "Submit My Three Songs"}
           </button>
         </form>

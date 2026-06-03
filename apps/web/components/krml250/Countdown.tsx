@@ -38,12 +38,12 @@ export function Countdown() {
   }
 
   if (isRevealed) {
-    return <div className="text-center py-6"><p className="text-3xl font-bold text-amber-400">🎶 The Soundtrack is Revealed! 🎶</p></div>;
+    return <div className="text-center py-6"><p className="font-serif text-3xl font-bold text-[#2F5D62]">🎶 The Soundtrack is Revealed! 🎶</p></div>;
   }
 
   return (
     <div className="text-center">
-      <p className="text-zinc-400 text-sm mb-3 uppercase tracking-widest">Reveal on July 3, 2026</p>
+      <p className="text-[#6B6560] text-xs mb-3 uppercase tracking-widest">Reveal on July 3, 2026</p>
       <div className="flex gap-3 justify-center">
         <CountdownUnit value={String(timeLeft.days).padStart(2, "0")} label="Days" />
         <Separator />
@@ -60,14 +60,14 @@ export function Countdown() {
 function CountdownUnit({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 min-w-[60px] text-center">
-        <span className="text-3xl font-bold text-amber-400 tabular-nums">{value}</span>
+      <div className="bg-[#F5F3EF] border border-[#D8D4CE] rounded-lg px-4 py-3 min-w-[60px] text-center">
+        <span className="font-serif text-3xl font-bold text-[#2F5D62] tabular-nums">{value}</span>
       </div>
-      <span className="text-zinc-500 text-xs mt-1 uppercase tracking-wider">{label}</span>
+      <span className="text-[#8A8480] text-xs mt-1 uppercase tracking-wider">{label}</span>
     </div>
   );
 }
 
 function Separator() {
-  return <div className="flex items-center pb-5"><span className="text-2xl text-zinc-600 font-bold">:</span></div>;
+  return <div className="flex items-center pb-5"><span className="text-2xl text-[#D8D4CE] font-bold">:</span></div>;
 }
