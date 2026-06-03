@@ -15,10 +15,10 @@ async function getData() {
       fetch(`${process.env.API_URL ?? "http://localhost:8000"}/api/v1/leaderboard/dj-picks`, { next: { revalidate: 60 } }).then(r => r.json()),
     ]);
     return {
-      songs: songs.status === "fulfilled" ? (songs.value as LeaderboardSong[]) : [],
-      towns: towns.status === "fulfilled" ? (towns.value as TownEntry[]) : [],
-      decades: decades.status === "fulfilled" ? (decades.value as DecadeEntry[]) : [],
-      djPicks: djPicks.status === "fulfilled" ? (djPicks.value as Song[]) : [],
+      songs: songs.status === "fulfilled" && Array.isArray(songs.value) ? (songs.value as LeaderboardSong[]) : [],
+      towns: towns.status === "fulfilled" && Array.isArray(towns.value) ? (towns.value as TownEntry[]) : [],
+      decades: decades.status === "fulfilled" && Array.isArray(decades.value) ? (decades.value as DecadeEntry[]) : [],
+      djPicks: djPicks.status === "fulfilled" && Array.isArray(djPicks.value) ? (djPicks.value as Song[]) : [],
     };
   } catch {
     return { songs: [], towns: [], decades: [], djPicks: [] };
