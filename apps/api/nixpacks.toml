@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["python311", "postgresql", "openssl", "libffi", "gcc"]
+
+[phases.install]
+cmds = [
+  "python3.11 -m venv /app/.venv",
+  "/app/.venv/bin/pip install -e ."
+]
+
+[start]
+cmd = "/app/.venv/bin/alembic upgrade head && /app/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port $PORT"
