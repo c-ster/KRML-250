@@ -44,7 +44,10 @@ def register(body: ParticipantRegister, db: Session = Depends(get_db)):
         existing.verification_token = token
         existing.verification_token_expires_at = expires
         db.commit()
-        send_verification_email(existing.email, existing.name, token)
+        try:
+            send_verification_email(existing.email, existing.name, token)
+        except Exception as exc:
+            logger.error("Failed to send verification email to %s: %s", existing.email, exc)
         return existing
 
     participant = orm.Participant(
@@ -62,7 +65,10 @@ def register(body: ParticipantRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(participant)
 
-    send_verification_email(participant.email, participant.name, token)
+    try:
+        send_verification_email(participant.email, participant.name, token)
+    except Exception as exc:
+        logger.error("Failed to send verification email to %s: %s", participant.email, exc)
     return participant
 
 

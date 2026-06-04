@@ -63,7 +63,7 @@ def _send_smtp(to_email: str, subject: str, html_body: str, text_body: str) -> N
     msg.attach(MIMEText(html_body, "html"))
 
     try:
-        with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
+        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=10) as server:
             server.starttls()
             if settings.smtp_user:
                 server.login(settings.smtp_user, settings.smtp_pass)
