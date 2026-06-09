@@ -40,7 +40,7 @@ export default function VerifyPage() {
       await participantsApi.register({ name, email, city, zip, town, consent_campaign_rules: consentRules, consent_publish_submission: consentPublish });
       setStep("sent");
     } catch (err: any) {
-      setError(err?.detail || "Something went wrong. Please try again.");
+      setError(err?.detail ? `${err.detail}${err.status ? ` (${err.status})` : ""}` : `Something went wrong. Please try again.${err?.status ? ` (${err.status})` : ""}`);
     } finally {
       setLoading(false);
     }
