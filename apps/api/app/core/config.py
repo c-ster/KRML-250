@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     smtp_user: str = ""
     smtp_pass: str = ""
     sendgrid_api_key: str = ""
+    resend_api_key: str = ""
     from_email: str = "noreply@krml.com"
     frontend_url: str = "http://localhost:3000"
 

@@ -49,6 +49,8 @@ def _send(to_email: str, subject: str, html_body: str, text_body: str) -> None:
         _send_smtp(to_email, subject, html_body, text_body)
     elif provider == "sendgrid":
         _send_sendgrid(to_email, subject, html_body, text_body)
+    elif provider == "resend":
+        _send_resend(to_email, subject, html_body, text_body)
     else:
         logger.warning("Unknown email provider %r, falling back to log", provider)
         logger.info("EMAIL to=%s subject=%r", to_email, subject)
@@ -71,6 +73,30 @@ def _send_smtp(to_email: str, subject: str, html_body: str, text_body: str) -> N
         logger.info("Sent SMTP email to %s", to_email)
     except Exception as exc:
         logger.error("SMTP send failed to %s: %s", to_email, exc)
+        raise
+
+
+def _send_resend(to_email: str, subject: str, html_body: str, text_body: str) -> None:
+    try:
+        import httpx
+
+        payload = {
+            "from": settings.from_email,
+            "to": [to_email],
+            "subject": subject,
+            "html": html_body,
+            "text": text_body,
+        }
+        resp = httpx.post(
+            "https://api.resend.com/emails",
+            json=payload,
+            headers={"Authorization": f"Bearer {settings.resend_api_key}"},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        logger.info("Sent Resend email to %s", to_email)
+    except Exception as exc:
+        logger.error("Resend send failed to %s: %s", to_email, exc)
         raise
 
 
