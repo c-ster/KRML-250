@@ -175,6 +175,10 @@ SONGS_DATA = [
     ("Man on the Moon", "R.E.M.", "1990s", 1992, 7, True, False, None),
     ("Nightswimming", "R.E.M.", "1990s", 1992, 8, True, True, None),
     ("The One I Love", "R.E.M.", "1980s", 1987, 7, True, False, None),
+    ("Purple Haze", "The Jimi Hendrix Experience", "1960s", 1967, 9, True, True, "monterey"),
+    ("Hey Joe", "The Jimi Hendrix Experience", "1960s", 1966, 9, True, True, "monterey"),
+    ("Wild Thing", "The Jimi Hendrix Experience", "1960s", 1967, 9, True, True, "monterey"),
+    ("Piece of My Heart", "Big Brother & The Holding Company", "1960s", 1968, 9, True, True, "monterey"),
 ]
 
 PARTICIPANTS_DATA = [
