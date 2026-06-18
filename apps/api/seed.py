@@ -745,6 +745,34 @@ def main() -> None:
         print(f"{len(SONGS_DATA)} songs in catalog, {len(existing_keys)} already in DB, adding {len(to_add)} new...")
         if not to_add:
             print("All songs already present.")
+
+        # Always boost featured showcase songs so they top the leaderboard before real nominations roll in
+        FEATURED = [
+            ("Californication", "Red Hot Chili Peppers"),
+            ("Big Sur", "Jack Johnson"),
+            ("California Girls", "The Beach Boys"),
+        ]
+        boosted = 0
+        for title, artist in FEATURED:
+            row = db.execute(
+                select(Song).where(
+                    Song.normalized_title == normalize(title),
+                    Song.normalized_artist == normalize(artist),
+                )
+            ).scalar_one_or_none()
+            if row:
+                row.aaa_fit_score = 10
+                row.dj_pick = True
+                row.status = "approved"
+                boosted += 1
+        if boosted:
+            db.commit()
+            print(f"Boosted {boosted} featured songs to aaa_fit_score=10.")
+
+        if not to_add:
+            print("No new songs to add. Done.")
+            return
+
         song_objects = []
         for title, artist, decade, year, aaa, seeded, dj, town in to_add:
             song = Song(
