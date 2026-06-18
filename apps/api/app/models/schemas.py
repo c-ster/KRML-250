@@ -83,6 +83,11 @@ class SongSearchResult(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class SongSuggest(BaseModel):
+    title: str
+    artist: str
+
+
 class SongUpdate(BaseModel):
     canonical_title: Optional[str] = None
     canonical_artist: Optional[str] = None

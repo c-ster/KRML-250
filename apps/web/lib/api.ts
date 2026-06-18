@@ -91,6 +91,11 @@ export const songsApi = {
   search: (q: string) =>
     request<SongSearchResult[]>(`/songs/search?q=${encodeURIComponent(q)}`),
   get: (id: string) => request<Song>(`/songs/${id}`),
+  suggest: (title: string, artist: string) =>
+    request<SongSearchResult>("/songs/suggest", {
+      method: "POST",
+      body: JSON.stringify({ title, artist }),
+    }),
 };
 
 // ─── Submissions ──────────────────────────────────────────────────────────────
