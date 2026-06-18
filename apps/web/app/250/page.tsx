@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Countdown } from "@/components/krml250/Countdown";
 import { Leaderboard } from "@/components/krml250/Leaderboard";
 import { TownLeaderboard } from "@/components/krml250/TownLeaderboard";
@@ -32,7 +33,10 @@ export default async function LandingPage() {
     <main className="min-h-screen bg-[#F5F3EF]">
       <nav className="border-b border-[#D8D4CE] bg-[#F5F3EF]/95 backdrop-blur-sm sticky top-0 z-10 px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/250" className="font-serif font-bold text-lg text-[#1F1F1F] tracking-tight">KRML 250</Link>
+          <Link href="/250" className="flex items-center gap-2">
+            <Image src="/krml-logo.png" alt="KRML 94.7" width={36} height={36} className="rounded-full" />
+            <span className="font-serif font-bold text-lg text-[#1F1F1F] tracking-tight">KRML 250</span>
+          </Link>
           <div className="flex items-center gap-4 text-sm">
             <Link href="/250/towns" className="text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Towns</Link>
             <Link href="/250/decades" className="text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Decades</Link>
@@ -52,6 +56,9 @@ export default async function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#1F1F1F]/40 via-[#1F1F1F]/30 to-[#F5F3EF]" />
         {/* Content */}
         <div className="relative z-10 px-4 py-20 max-w-3xl mx-auto">
+          <div className="flex justify-center mb-4">
+            <Image src="/krml-logo.png" alt="KRML 94.7" width={80} height={80} className="rounded-full opacity-90 drop-shadow-lg" />
+          </div>
           <div className="text-[#E2C48A] text-xs font-semibold uppercase tracking-widest mb-3 drop-shadow">KRML Radio presents</div>
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
             What does the<br /><span className="text-[#E2C48A]">Monterey Bay</span><br />sound like?
@@ -135,6 +142,9 @@ export default async function LandingPage() {
       </section>
 
       <footer className="border-t border-[#D8D4CE] bg-white py-8 px-4 text-center text-[#8A8480] text-sm">
+        <div className="flex justify-center mb-3">
+          <Image src="/krml-logo.png" alt="KRML 94.7" width={48} height={48} className="rounded-full opacity-60" />
+        </div>
         <p className="mb-1 font-serif">KRML 250 — The Soundtrack of the Monterey Bay</p>
         <p>© 2026 KRML Radio. Results reveal July 3, 2026.{" "}<Link href="/250/rules" className="text-[#6B6560] hover:text-[#1F1F1F] underline">Official Rules</Link></p>
       </footer>
