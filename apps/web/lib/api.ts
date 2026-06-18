@@ -74,7 +74,7 @@ export const participantsApi = {
     town: string;
     consent_campaign_rules: boolean;
     consent_publish_submission: boolean;
-  }) => request<{ id: string; email: string }>("/participants", { method: "POST", body: JSON.stringify(body) }),
+  }) => request<{ id: string; email: string; dev_verify_url?: string }>("/participants", { method: "POST", body: JSON.stringify(body) }),
 
   verify: (token: string) =>
     request<{ access_token: string; token_type: string; participant: Participant }>(

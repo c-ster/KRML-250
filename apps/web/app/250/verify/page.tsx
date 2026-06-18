@@ -30,6 +30,7 @@ export default function VerifyPage() {
   const [consentPublish, setConsentPublish] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [devVerifyUrl, setDevVerifyUrl] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,7 +38,8 @@ export default function VerifyPage() {
     setLoading(true);
     setError("");
     try {
-      await participantsApi.register({ name, email, city, zip, town, consent_campaign_rules: consentRules, consent_publish_submission: consentPublish });
+      const result = await participantsApi.register({ name, email, city, zip, town, consent_campaign_rules: consentRules, consent_publish_submission: consentPublish });
+      if (result.dev_verify_url) setDevVerifyUrl(result.dev_verify_url);
       setStep("sent");
     } catch (err: any) {
       setError(err?.detail ? `${err.detail}${err.status ? ` (${err.status})` : ""}` : `Something went wrong. Please try again.${err?.status ? ` (${err.status})` : ""}`);
@@ -54,6 +56,12 @@ export default function VerifyPage() {
           <h1 className="font-serif text-2xl font-bold text-[#1F1F1F] mb-3">Check your inbox</h1>
           <p className="text-[#6B6560] mb-2">We sent a verification link to <strong className="text-[#2F5D62]">{email}</strong>.</p>
           <p className="text-[#8A8480] text-sm">Click the link in the email to verify your address and unlock your submission. The link expires in 24 hours.</p>
+          {devVerifyUrl && (
+            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-left">
+              <p className="font-medium text-amber-800 mb-1">Dev mode — no email sent</p>
+              <a href={devVerifyUrl} className="text-[#2F5D62] underline break-all">Click here to verify directly</a>
+            </div>
+          )}
           <div className="mt-8"><Link href="/250" className="text-[#2F5D62] hover:text-[#1F1F1F] text-sm">← Back to KRML 250</Link></div>
         </div>
       </div>

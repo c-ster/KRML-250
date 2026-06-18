@@ -20,6 +20,7 @@ class ParticipantOut(BaseModel):
     has_used_edit: bool
     created_at: datetime
     updated_at: datetime
+    dev_verify_url: Optional[str] = None  # only set when EMAIL_PROVIDER=none
 
     model_config = {"from_attributes": True}
 
