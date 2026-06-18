@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.auth import create_access_token, get_current_participant
+from app.core.config import settings
 from app.core.database import get_db
 from app.models import orm
 from app.models.schemas import (
@@ -51,7 +52,10 @@ def register(body: ParticipantRegister, db: Session = Depends(get_db)):
             send_verification_email(existing.email, existing.name, token)
         except Exception as exc:
             logger.error("Failed to send verification email to %s: %s", existing.email, exc)
-        return existing
+        out = ParticipantOut.model_validate(existing)
+        if settings.email_provider.lower() == "none":
+            out.dev_verify_url = f"{settings.frontend_url}/250/verify/{token}"
+        return out
 
     participant = orm.Participant(
         name=body.name.strip(),
@@ -72,7 +76,10 @@ def register(body: ParticipantRegister, db: Session = Depends(get_db)):
         send_verification_email(participant.email, participant.name, token)
     except Exception as exc:
         logger.error("Failed to send verification email to %s: %s", participant.email, exc)
-    return participant
+    out = ParticipantOut.model_validate(participant)
+    if settings.email_provider.lower() == "none":
+        out.dev_verify_url = f"{settings.frontend_url}/250/verify/{token}"
+    return out
 
 
 @router.post("/verify", response_model=TokenResponse)
