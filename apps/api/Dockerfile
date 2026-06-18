@@ -5,5 +5,6 @@ COPY pyproject.toml .
 COPY app/ app/
 COPY alembic.ini .
 COPY alembic/ alembic/
+COPY seed.py .
 RUN pip install -e .
 CMD alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
