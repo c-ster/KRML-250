@@ -732,16 +732,21 @@ def main() -> None:
     with SessionFactory() as db:
         print("Seeding KRML 250 database...")
 
-        existing = db.execute(select(Song)).scalars().first()
-        if existing:
-            print("Database already has songs. Skipping seed.")
-            return
+        existing_keys = set(
+            db.execute(select(Song.normalized_title, Song.normalized_artist)).all()
+        )
 
         now = utcnow()
 
-        print(f"Creating {len(SONGS_DATA)} songs...")
+        to_add = [
+            s for s in SONGS_DATA
+            if (normalize(s[0]), normalize(s[1])) not in existing_keys
+        ]
+        print(f"{len(SONGS_DATA)} songs in catalog, {len(existing_keys)} already in DB, adding {len(to_add)} new...")
+        if not to_add:
+            print("All songs already present.")
         song_objects = []
-        for title, artist, decade, year, aaa, seeded, dj, town in SONGS_DATA:
+        for title, artist, decade, year, aaa, seeded, dj, town in to_add:
             song = Song(
                 id=new_id(),
                 canonical_title=title,
@@ -761,6 +766,16 @@ def main() -> None:
             db.add(song)
             song_objects.append(song)
         db.flush()
+
+        if not to_add:
+            print("No new songs to add. Done.")
+            return
+
+        # Aliases and demo data only seeded on first run (song_objects indices assume full catalog)
+        if len(existing_keys) > 0:
+            db.commit()
+            print(f"Added {len(to_add)} new songs. Done.")
+            return
 
         alias_variants = [
             (song_objects[0].id, "California Dreaming", "Mamas and Papas"),
