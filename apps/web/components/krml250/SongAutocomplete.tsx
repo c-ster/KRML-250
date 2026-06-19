@@ -25,10 +25,10 @@ export function SongAutocomplete({ value, onChange, placeholder = "Search by tit
   const containerRef = useRef<HTMLDivElement>(null);
 
   const search = useCallback(async (q: string) => {
-    if (q.length < 2) { setResults([]); setShowAddForm(false); return; }
+    if (q.length < 2) { setResults([]); setShowAddForm(false); setOpen(false); return; }
     setLoading(true);
     try { const data = await songsApi.search(q); setResults(data); setOpen(true); }
-    catch { setResults([]); }
+    catch { setResults([]); setOpen(true); }
     finally { setLoading(false); }
   }, []);
 
@@ -75,7 +75,7 @@ export function SongAutocomplete({ value, onChange, placeholder = "Search by tit
     }
   }
 
-  const noResults = open && !loading && query.length >= 2 && results.length === 0;
+  const noResults = open && !loading && !value && query.length >= 2 && results.length === 0;
 
   return (
     <div ref={containerRef} className="relative w-full">
