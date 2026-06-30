@@ -38,10 +38,10 @@ export default async function LandingPage() {
             <span className="font-serif font-bold text-lg text-[#1F1F1F] tracking-tight">KRML 250</span>
           </Link>
           <div className="flex items-center gap-4 text-sm">
-            <Link href="/250/towns" className="text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Towns</Link>
-            <Link href="/250/decades" className="text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Decades</Link>
-            <Link href="/250/rules" className="text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Rules</Link>
-            <Link href="/250/verify" className="bg-[#2F5D62] hover:bg-[#245059] text-white font-semibold px-4 py-2 rounded-lg transition-colors">Sign In</Link>
+            <Link href="/250/towns" className="hidden sm:block text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Towns</Link>
+            <Link href="/250/decades" className="hidden sm:block text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Decades</Link>
+            <Link href="/250/rules" className="hidden sm:block text-[#6B6560] hover:text-[#1F1F1F] transition-colors">Rules</Link>
+            <Link href="/250/verify" className="bg-[#2F5D62] hover:bg-[#245059] text-white font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap">Sign In</Link>
           </div>
         </div>
       </nav>
@@ -141,13 +141,37 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-[#D8D4CE] bg-white py-8 px-4 text-center text-[#8A8480] text-sm">
+      <footer className="border-t border-[#D8D4CE] bg-white py-8 px-4 pb-24 sm:pb-8 text-center text-[#8A8480] text-sm">
         <div className="flex justify-center mb-3">
           <Image src="/krml-logo.png" alt="KRML 94.7" width={48} height={48} className="rounded-full opacity-60" />
         </div>
         <p className="mb-1 font-serif">KRML 250 — The Soundtrack of the Monterey Bay</p>
         <p>© 2026 KRML Radio. Results reveal July 3, 2026.{" "}<Link href="/250/rules" className="text-[#6B6560] hover:text-[#1F1F1F] underline">Official Rules</Link></p>
       </footer>
+
+      {/* Mobile bottom nav — only visible on small screens */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#D8D4CE] flex z-20 safe-area-inset-bottom">
+        <Link href="/250/submit" className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-[#6B6560] hover:text-[#2F5D62] active:bg-[#F5F3EF] transition-colors">
+          <span className="text-xl">🎵</span>
+          <span className="text-[10px] font-medium">Submit</span>
+        </Link>
+        <Link href="/250/swipe" className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-[#6B6560] hover:text-[#2F5D62] active:bg-[#F5F3EF] transition-colors">
+          <span className="text-xl">👆</span>
+          <span className="text-[10px] font-medium">Swipe</span>
+        </Link>
+        <Link href="/250/predict" className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-[#6B6560] hover:text-[#2F5D62] active:bg-[#F5F3EF] transition-colors">
+          <span className="text-xl">🔮</span>
+          <span className="text-[10px] font-medium">Predict</span>
+        </Link>
+        <Link href="/250/towns" className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-[#6B6560] hover:text-[#2F5D62] active:bg-[#F5F3EF] transition-colors">
+          <span className="text-xl">🌊</span>
+          <span className="text-[10px] font-medium">Towns</span>
+        </Link>
+        <Link href="/250/rules" className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-[#6B6560] hover:text-[#2F5D62] active:bg-[#F5F3EF] transition-colors">
+          <span className="text-xl">📋</span>
+          <span className="text-[10px] font-medium">Rules</span>
+        </Link>
+      </nav>
     </main>
   );
 }
